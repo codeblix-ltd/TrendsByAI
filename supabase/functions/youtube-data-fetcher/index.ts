@@ -12,23 +12,27 @@ Deno.serve(async (req) => {
     }
 
     try {
+        console.log('🚀 YouTube data fetcher started');
         const { keywords, maxResults = 25, scanType = 'trending' } = await req.json();
+        console.log('📝 Request parsed:', { keywords, maxResults, scanType });
 
         if (!keywords || !Array.isArray(keywords) || keywords.length === 0) {
             throw new Error('Keywords array is required');
         }
 
         // Get environment variables
+        console.log('🔑 Getting environment variables...');
         let youtubeApiKey = Deno.env.get('YOUTUBE_API_KEY');
-        
+
         // Fallback to hardcoded key if environment variable not available
         if (!youtubeApiKey) {
             console.log('Environment YouTube API key not found, using hardcoded fallback');
             youtubeApiKey = 'AIzaSyA1NEXLmZzYIR_N7t-W8SHUq1DLe8WjJYE';
         }
-        
+
         const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
         const supabaseUrl = Deno.env.get('SUPABASE_URL');
+        console.log('🔑 Environment check:', { hasServiceKey: !!serviceRoleKey, hasSupabaseUrl: !!supabaseUrl });
 
         if (!serviceRoleKey || !supabaseUrl) {
             throw new Error('Supabase configuration missing');
@@ -68,12 +72,14 @@ Deno.serve(async (req) => {
             });
         }
 
+        console.log('📊 Creating scan session...');
         const sessionId = generateUUID();
         const sessionData = {
             id: sessionId,
             session_id: `youtube_${scanType}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
             status: 'running'
         };
+        console.log('📊 Session data:', sessionData);
 
         const sessionResponse = await fetch(`${supabaseUrl}/rest/v1/scan_sessions`, {
             method: 'POST',
@@ -86,6 +92,7 @@ Deno.serve(async (req) => {
             body: JSON.stringify(sessionData)
         });
 
+        console.log('📊 Session response status:', sessionResponse.status);
         if (!sessionResponse.ok) {
             const errorText = await sessionResponse.text();
             console.error('Failed to create scan session:', errorText);
@@ -93,7 +100,7 @@ Deno.serve(async (req) => {
         }
 
         const session = await sessionResponse.json();
-        console.log('Scan session created successfully:', sessionId);
+        console.log('✅ Scan session created successfully:', sessionId);
 
         let totalVideosFound = 0;
         let totalVideosProcessed = 0;
