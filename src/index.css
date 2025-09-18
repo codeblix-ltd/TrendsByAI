@@ -36,29 +36,29 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#0D0F18] text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Dark theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(31 41 55);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(75 85 99);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(107 114 128);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Line clamp utility */
@@ -69,11 +69,22 @@
   overflow: hidden;
 }
 
-/* Glass morphism effect */
+/* Glass morphism effect - Reference UI style */
 .glass {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+}
+
+/* Dashboard card style from reference UI */
+.dashboard-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
 }
 
 /* Gradient text */
@@ -116,15 +127,24 @@
   @apply focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-gray-900;
 }
 
-/* Button variants */
+/* Button variants - Reference UI style */
 .btn-primary {
-  @apply bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl;
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-3 rounded-2xl transition-colors duration-200;
 }
 
 .btn-secondary {
-  @apply bg-gray-700 hover:bg-gray-600 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200;
+  @apply bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium px-4 py-3 rounded-2xl transition-colors duration-200;
 }
 
 .btn-ghost {
-  @apply hover:bg-gray-800 text-gray-300 hover:text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200;
+  @apply hover:bg-white/5 text-gray-300 hover:text-white font-medium px-4 py-3 rounded-2xl transition-colors duration-200;
+}
+
+/* Reference UI specific styles */
+.bg-main {
+  background-color: #0D0F18;
+}
+
+.text-secondary {
+  color: rgb(156 163 175); /* gray-400 */
 }
