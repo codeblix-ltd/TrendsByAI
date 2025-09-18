@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
         let totalApiCalls = 0;
         const errors: string[] = [];
 
-        // Check daily API usage
+        // Check daily API usage - sum all records for today
         const today = new Date().toISOString().split('T')[0];
         const usageResponse = await fetch(`${supabaseUrl}/rest/v1/api_usage?date=eq.${today}&service=eq.youtube`, {
             headers: {
@@ -112,7 +112,9 @@ Deno.serve(async (req) => {
         let currentUsage = 0;
         if (usageResponse.ok) {
             const usageData = await usageResponse.json();
-            currentUsage = usageData[0]?.quota_used || 0;
+            // Sum all quota_used for today instead of just taking the first record
+            currentUsage = usageData.reduce((total: number, record: any) => total + (record.quota_used || 0), 0);
+            console.log(`Found ${usageData.length} usage records for today, total quota used: ${currentUsage}`);
         }
 
         const quotaLimit = 10000;
@@ -146,7 +148,66 @@ Deno.serve(async (req) => {
                     const errorData = await searchResponse.text();
                     errors.push(`Search API error for ${keyword}: ${errorData}`);
                     console.error(`Search API error for ${keyword}:`, errorData);
-                    
+
+                    // Handle quota exceeded error specifically
+                    if (searchResponse.status === 403 && errorData.includes('quotaExceeded')) {
+                        console.log('YouTube API quota exceeded, switching to fallback data');
+
+                        // Update API usage to reflect quota exhaustion
+                        await fetch(`${supabaseUrl}/rest/v1/api_usage`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${serviceRoleKey}`,
+                                'apikey': serviceRoleKey,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                date: today,
+                                service: 'youtube',
+                                quota_used: 10000, // Mark as fully used
+                                quota_limit: 10000,
+                                requests_count: keywords.length,
+                                errors_count: keywords.length,
+                                response_time_avg: 0,
+                                updated_at: new Date().toISOString()
+                            })
+                        });
+
+                        // Generate fallback data and return immediately
+                        const fallbackData = await generateFallbackData(serviceRoleKey, supabaseUrl);
+
+                        // Update scan session with quota exceeded status
+                        await fetch(`${supabaseUrl}/rest/v1/scan_sessions?id=eq.${sessionId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `Bearer ${serviceRoleKey}`,
+                                'apikey': serviceRoleKey,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                status: 'completed_with_fallback',
+                                videos_found: fallbackData.length,
+                                api_calls_made: totalApiCalls,
+                                errors: ['YouTube API quota exceeded - using sample data'],
+                                completed_at: new Date().toISOString()
+                            })
+                        });
+
+                        return new Response(JSON.stringify({
+                            data: {
+                                sessionId,
+                                videosFound: fallbackData.length,
+                                videosProcessed: fallbackData.length,
+                                apiCallsUsed: totalApiCalls,
+                                quotaRemaining: 0,
+                                errors: ['YouTube API quota exceeded - using sample data. Quota will reset at midnight PST.'],
+                                status: 'completed_with_fallback'
+                            }
+                        }), {
+                            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+                        });
+                    }
+
                     // If this is a permission/configuration error, use fallback data
                     if (searchResponse.status === 403 && errorData.includes('accessNotConfigured')) {
                         console.log('API not configured, using fallback data for', keyword);
@@ -327,25 +388,52 @@ Deno.serve(async (req) => {
             }
         }
 
-        // Update API usage
+        // Update API usage with proper upsert logic
         const newUsage = currentUsage + totalApiCalls;
-        await fetch(`${supabaseUrl}/rest/v1/api_usage`, {
-            method: 'POST',
+
+        // First, try to update existing record for today
+        const updateResponse = await fetch(`${supabaseUrl}/rest/v1/api_usage?date=eq.${today}&service=eq.youtube`, {
+            method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${serviceRoleKey}`,
                 'apikey': serviceRoleKey,
-                'Content-Type': 'application/json',
-                'Prefer': 'resolution=merge-duplicates'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                date: today,
-                service: 'youtube',
                 quota_used: newUsage,
+                quota_limit: 10000,
                 requests_count: keywords.length * 2,
                 errors_count: errors.length,
+                response_time_avg: 0,
                 updated_at: new Date().toISOString()
             })
         });
+
+        // If no existing record was updated, create a new one
+        if (updateResponse.ok) {
+            const updateResult = await updateResponse.text();
+            if (!updateResult || updateResult === '[]') {
+                // No existing record found, create new one
+                await fetch(`${supabaseUrl}/rest/v1/api_usage`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${serviceRoleKey}`,
+                        'apikey': serviceRoleKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date: today,
+                        service: 'youtube',
+                        quota_used: newUsage,
+                        quota_limit: 10000,
+                        requests_count: keywords.length * 2,
+                        errors_count: errors.length,
+                        response_time_avg: 0,
+                        updated_at: new Date().toISOString()
+                    })
+                });
+            }
+        }
 
         // Update scan session
         await fetch(`${supabaseUrl}/rest/v1/scan_sessions?id=eq.${sessionId}`, {
