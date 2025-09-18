@@ -5,7 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatNumber(num: number): string {
+export function formatNumber(num: number | undefined | null): string {
+  if (!num || num === 0) return '0'
   if (num >= 1000000) {
     return (num / 1000000).toFixed(1) + 'M'
   }
@@ -70,16 +71,18 @@ export function calculateTrendScore(video: any): number {
   )
 }
 
-export function getScoreColor(score: number): string {
-  if (score >= 80) return 'text-green-400'
-  if (score >= 60) return 'text-yellow-400'
-  if (score >= 40) return 'text-orange-400'
+export function getScoreColor(score: number | undefined | null): string {
+  const safeScore = score || 0
+  if (safeScore >= 80) return 'text-green-400'
+  if (safeScore >= 60) return 'text-yellow-400'
+  if (safeScore >= 40) return 'text-orange-400'
   return 'text-red-400'
 }
 
-export function getScoreBadgeColor(score: number): string {
-  if (score >= 80) return 'bg-green-500/20 text-green-400 border-green-500/30'
-  if (score >= 60) return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-  if (score >= 40) return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+export function getScoreBadgeColor(score: number | undefined | null): string {
+  const safeScore = score || 0
+  if (safeScore >= 80) return 'bg-green-500/20 text-green-400 border-green-500/30'
+  if (safeScore >= 60) return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+  if (safeScore >= 40) return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
   return 'bg-red-500/20 text-red-400 border-red-500/30'
 }

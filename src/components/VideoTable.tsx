@@ -258,21 +258,21 @@ const VideoTable: React.FC<VideoTableProps> = ({ videos, onGenerateSEO, searchQu
                 {/* Overall Score */}
                 <td className="px-6 py-4">
                   <div className="flex items-center space-x-3">
-                    <div className={`text-2xl font-bold ${getScoreColor(video.overall_score)}`}>
-                      {video.overall_score.toFixed(1)}
+                    <div className={`text-2xl font-bold ${getScoreColor(video.overall_score || 0)}`}>
+                      {(video.overall_score || 0).toFixed(1)}
                     </div>
                     <div className="space-y-1">
-                      <div className={`text-xs px-2 py-1 rounded-full border ${getScoreBadgeColor(video.overall_score)}`}>
-                        {video.overall_score >= 80 ? 'Excellent' : 
-                         video.overall_score >= 60 ? 'Good' : 
-                         video.overall_score >= 40 ? 'Average' : 'Poor'}
+                      <div className={`text-xs px-2 py-1 rounded-full border ${getScoreBadgeColor(video.overall_score || 0)}`}>
+                        {(video.overall_score || 0) >= 80 ? 'Excellent' :
+                         (video.overall_score || 0) >= 60 ? 'Good' :
+                         (video.overall_score || 0) >= 40 ? 'Average' : 'Poor'}
                       </div>
                       <div className="flex items-center space-x-1">
                         <div className="flex space-x-1">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <Star
                               key={star}
-                              className={`w-3 h-3 ${star <= Math.round(video.overall_score / 20) ? 'text-yellow-400 fill-current' : 'text-gray-600'}`}
+                              className={`w-3 h-3 ${star <= Math.round((video.overall_score || 0) / 20) ? 'text-yellow-400 fill-current' : 'text-gray-600'}`}
                             />
                           ))}
                         </div>
@@ -307,17 +307,17 @@ const VideoTable: React.FC<VideoTableProps> = ({ videos, onGenerateSEO, searchQu
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <Zap className="w-4 h-4 text-yellow-400" />
-                      <span className={`font-medium ${getScoreColor(video.velocity_score)}`}>
-                        {video.velocity_score.toFixed(1)}
+                      <span className={`font-medium ${getScoreColor(video.velocity_score || 0)}`}>
+                        {(video.velocity_score || 0).toFixed(1)}
                       </span>
                     </div>
                     <div className="text-xs text-gray-400">
-                      {video.views_per_minute.toFixed(1)} views/min
+                      {(video.views_per_minute || 0).toFixed(1)} views/min
                     </div>
                     <div className="text-xs text-gray-400">
-                      {video.age_minutes < 60 
-                        ? `${video.age_minutes}m old`
-                        : `${Math.floor(video.age_minutes / 60)}h old`
+                      {(video.age_minutes || 0) < 60
+                        ? `${video.age_minutes || 0}m old`
+                        : `${Math.floor((video.age_minutes || 0) / 60)}h old`
                       }
                     </div>
                   </div>

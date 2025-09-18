@@ -147,8 +147,8 @@ const TrendingVideos: React.FC<TrendingVideosProps> = ({ videos }) => {
                   </div>
                   
                   {/* Score */}
-                  <div className={`text-lg font-bold ${getScoreColor(video.overall_score)}`}>
-                    {video.overall_score.toFixed(1)}
+                  <div className={`text-lg font-bold ${getScoreColor(video.overall_score || 0)}`}>
+                    {(video.overall_score || 0).toFixed(1)}
                   </div>
                 </div>
 
@@ -178,8 +178,8 @@ const TrendingVideos: React.FC<TrendingVideosProps> = ({ videos }) => {
                       <Zap className="w-3 h-3 text-yellow-400" />
                       <span className="text-xs text-gray-400">Velocity</span>
                     </div>
-                    <div className={`text-sm font-semibold ${getScoreColor(video.velocity_score)}`}>
-                      {video.velocity_score.toFixed(1)}
+                    <div className={`text-sm font-semibold ${getScoreColor(video.velocity_score || 0)}`}>
+                      {(video.velocity_score || 0).toFixed(1)}
                     </div>
                   </div>
                   
@@ -189,7 +189,7 @@ const TrendingVideos: React.FC<TrendingVideosProps> = ({ videos }) => {
                       <span className="text-xs text-gray-400">Engagement</span>
                     </div>
                     <div className="text-sm font-semibold text-purple-400">
-                      {video.engagement_rate.toFixed(1)}%
+                      {(video.engagement_rate || 0).toFixed(1)}%
                     </div>
                   </div>
                 </div>
