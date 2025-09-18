@@ -338,44 +338,33 @@ Deno.serve(async (req) => {
                             seo_score: parseFloat(seoScore.toFixed(2)),
                             overall_score: parseFloat(overallScore.toFixed(2)),
                             is_trending: overallScore > 60,
-                            data_source: 'api',
                             last_updated: new Date().toISOString()
                         };
 
-                        // Upsert video data
-                        const upsertResponse = await fetch(`${supabaseUrl}/rest/v1/videos`, {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${serviceRoleKey}`,
-                                'apikey': serviceRoleKey,
-                                'Content-Type': 'application/json',
-                                'Prefer': 'resolution=merge-duplicates'
-                            },
-                            body: JSON.stringify(videoData)
-                        });
-
-                        if (upsertResponse.ok) {
-                            totalVideosProcessed++;
-                            
-                            // Store metrics history
-                            const historyData = {
-                                video_id: video.id,
-                                views: views,
-                                likes: likes,
-                                comments: comments,
-                                velocity: viewsPerMinute,
-                                recorded_at: new Date().toISOString()
-                            };
-
-                            await fetch(`${supabaseUrl}/rest/v1/video_metrics_history`, {
+                        // Insert video data with simple error handling
+                        try {
+                            const insertResponse = await fetch(`${supabaseUrl}/rest/v1/videos`, {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': `Bearer ${serviceRoleKey}`,
                                     'apikey': serviceRoleKey,
-                                    'Content-Type': 'application/json'
+                                    'Content-Type': 'application/json',
+                                    'Prefer': 'resolution=merge-duplicates'
                                 },
-                                body: JSON.stringify(historyData)
+                                body: JSON.stringify(videoData)
                             });
+
+                            if (insertResponse.ok) {
+                                totalVideosProcessed++;
+                                console.log(`✅ Successfully inserted video: ${video.snippet.title}`);
+                            } else {
+                                const errorText = await insertResponse.text();
+                                console.error(`❌ Failed to insert video ${video.id}:`, errorText);
+                                errors.push(`Insert failed for ${video.snippet.title}: ${errorText}`);
+                            }
+                        } catch (insertError) {
+                            console.error(`❌ Insert error for video ${video.id}:`, insertError);
+                            errors.push(`Insert error for ${video.snippet.title}: ${insertError.message}`);
                         }
                     } catch (videoError) {
                         console.error('Error processing video:', videoError);
@@ -518,7 +507,6 @@ async function generateFallbackData(serviceRoleKey: string, supabaseUrl: string)
             seo_score: 78.3,
             overall_score: 83.1,
             is_trending: true,
-            data_source: 'fallback',
             last_updated: new Date().toISOString()
         },
         {
@@ -549,7 +537,6 @@ async function generateFallbackData(serviceRoleKey: string, supabaseUrl: string)
             seo_score: 85.1,
             overall_score: 81.3,
             is_trending: true,
-            data_source: 'fallback',
             last_updated: new Date().toISOString()
         },
         {
@@ -580,7 +567,6 @@ async function generateFallbackData(serviceRoleKey: string, supabaseUrl: string)
             seo_score: 82.5,
             overall_score: 78.9,
             is_trending: true,
-            data_source: 'fallback',
             last_updated: new Date().toISOString()
         }
     ];
