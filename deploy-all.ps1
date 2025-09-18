@@ -35,111 +35,152 @@ Write-Header "STEP 1: PRE-DEPLOYMENT VERIFICATION"
 
 if ($Interactive) {
     $continue = Read-Host "Run pre-deployment verification? (y/n)"
-    if ($continue -ne 'y') { Write-Warning "Skipping verification"; goto SkipVerification }
-}
-
-try {
-    Write-Info "Running pre-deployment checks..."
-    .\verify-deployment.ps1 -ProjectId $ProjectId
-    Write-Success "Pre-deployment verification completed"
-} catch {
-    Write-Error "Pre-deployment verification failed: $_"
-    if ($Interactive) {
-        $continue = Read-Host "Continue anyway? (y/n)"
-        if ($continue -ne 'y') { exit 1 }
+    if ($continue -ne 'y') {
+        Write-Warning "Skipping verification"
+    } else {
+        try {
+            Write-Info "Running pre-deployment checks..."
+            .\verify-deployment.ps1 -ProjectId $ProjectId
+            Write-Success "Pre-deployment verification completed"
+        } catch {
+            Write-Error "Pre-deployment verification failed: $_"
+            if ($Interactive) {
+                $continue = Read-Host "Continue anyway? (y/n)"
+                if ($continue -ne 'y') { exit 1 }
+            }
+        }
+    }
+} else {
+    try {
+        Write-Info "Running pre-deployment checks..."
+        .\verify-deployment.ps1 -ProjectId $ProjectId
+        Write-Success "Pre-deployment verification completed"
+    } catch {
+        Write-Error "Pre-deployment verification failed: $_"
     }
 }
-
-:SkipVerification
 
 # Step 2: Database Setup
 if (!$FunctionsOnly -and !$CronJobsOnly) {
     Write-Header "STEP 2: DATABASE SETUP"
-    
+
     if ($Interactive) {
         $continue = Read-Host "Set up database schema and tables? (y/n)"
-        if ($continue -ne 'y') { Write-Warning "Skipping database setup"; goto SkipDatabase }
-    }
-    
-    try {
-        Write-Info "Setting up database schema..."
-        .\setup-database.ps1 -ProjectId $ProjectId
-        Write-Success "Database setup completed"
-    } catch {
-        Write-Error "Database setup failed: $_"
-        if ($Interactive) {
-            $continue = Read-Host "Continue with deployment? (y/n)"
-            if ($continue -ne 'y') { exit 1 }
+        if ($continue -ne 'y') {
+            Write-Warning "Skipping database setup"
+        } else {
+            try {
+                Write-Info "Setting up database schema..."
+                .\setup-database.ps1 -ProjectId $ProjectId
+                Write-Success "Database setup completed"
+            } catch {
+                Write-Error "Database setup failed: $_"
+                if ($Interactive) {
+                    $continue = Read-Host "Continue with deployment? (y/n)"
+                    if ($continue -ne 'y') { exit 1 }
+                }
+            }
+        }
+    } else {
+        try {
+            Write-Info "Setting up database schema..."
+            .\setup-database.ps1 -ProjectId $ProjectId
+            Write-Success "Database setup completed"
+        } catch {
+            Write-Error "Database setup failed: $_"
         }
     }
 }
-
-:SkipDatabase
 
 # Step 3: Edge Functions Deployment
 if (!$DatabaseOnly -and !$CronJobsOnly) {
     Write-Header "STEP 3: EDGE FUNCTIONS DEPLOYMENT"
-    
+
     if ($Interactive) {
         $continue = Read-Host "Deploy all edge functions? This may take several minutes. (y/n)"
-        if ($continue -ne 'y') { Write-Warning "Skipping functions deployment"; goto SkipFunctions }
-    }
-    
-    try {
-        Write-Info "Deploying edge functions..."
-        .\deploy-supabase.ps1 -ProjectId $ProjectId -SkipDatabase -SkipCronJobs
-        Write-Success "Edge functions deployment completed"
-    } catch {
-        Write-Error "Edge functions deployment failed: $_"
-        if ($Interactive) {
-            $continue = Read-Host "Continue with deployment? (y/n)"
-            if ($continue -ne 'y') { exit 1 }
+        if ($continue -ne 'y') {
+            Write-Warning "Skipping functions deployment"
+        } else {
+            try {
+                Write-Info "Deploying edge functions..."
+                .\deploy-supabase.ps1 -ProjectId $ProjectId -SkipDatabase -SkipCronJobs
+                Write-Success "Edge functions deployment completed"
+            } catch {
+                Write-Error "Edge functions deployment failed: $_"
+                if ($Interactive) {
+                    $continue = Read-Host "Continue with deployment? (y/n)"
+                    if ($continue -ne 'y') { exit 1 }
+                }
+            }
+        }
+    } else {
+        try {
+            Write-Info "Deploying edge functions..."
+            .\deploy-supabase.ps1 -ProjectId $ProjectId -SkipDatabase -SkipCronJobs
+            Write-Success "Edge functions deployment completed"
+        } catch {
+            Write-Error "Edge functions deployment failed: $_"
         }
     }
 }
 
-:SkipFunctions
-
 # Step 4: Cron Jobs Setup
 if (!$DatabaseOnly -and !$FunctionsOnly) {
     Write-Header "STEP 4: CRON JOBS SETUP"
-    
+
     if ($Interactive) {
         $continue = Read-Host "Set up automated cron jobs? (y/n)"
-        if ($continue -ne 'y') { Write-Warning "Skipping cron jobs setup"; goto SkipCronJobs }
-    }
-    
-    try {
-        Write-Info "Setting up cron jobs..."
-        .\setup-cron-jobs.ps1 -ProjectId $ProjectId
-        Write-Success "Cron jobs setup completed"
-    } catch {
-        Write-Error "Cron jobs setup failed: $_"
-        Write-Warning "You may need to manually execute the generated SQL scripts"
+        if ($continue -ne 'y') {
+            Write-Warning "Skipping cron jobs setup"
+        } else {
+            try {
+                Write-Info "Setting up cron jobs..."
+                .\setup-cron-jobs.ps1 -ProjectId $ProjectId
+                Write-Success "Cron jobs setup completed"
+            } catch {
+                Write-Error "Cron jobs setup failed: $_"
+                Write-Warning "You may need to manually execute the generated SQL scripts"
+            }
+        }
+    } else {
+        try {
+            Write-Info "Setting up cron jobs..."
+            .\setup-cron-jobs.ps1 -ProjectId $ProjectId
+            Write-Success "Cron jobs setup completed"
+        } catch {
+            Write-Error "Cron jobs setup failed: $_"
+            Write-Warning "You may need to manually execute the generated SQL scripts"
+        }
     }
 }
-
-:SkipCronJobs
 
 # Step 5: Post-deployment verification
 if (!$SkipVerification) {
     Write-Header "STEP 5: POST-DEPLOYMENT VERIFICATION"
-    
+
     if ($Interactive) {
         $continue = Read-Host "Run post-deployment verification? (y/n)"
-        if ($continue -ne 'y') { Write-Warning "Skipping post-deployment verification"; goto SkipPostVerification }
-    }
-    
-    try {
-        Write-Info "Running post-deployment verification..."
-        .\verify-deployment.ps1 -ProjectId $ProjectId -Detailed -TestFunctions
-        Write-Success "Post-deployment verification completed"
-    } catch {
-        Write-Warning "Post-deployment verification had issues: $_"
+        if ($continue -ne 'y') {
+            Write-Warning "Skipping post-deployment verification"
+        } else {
+            try {
+                Write-Info "Running post-deployment verification..."
+                .\verify-deployment.ps1 -ProjectId $ProjectId -Detailed -TestFunctions
+                Write-Success "Post-deployment verification completed"
+            } catch {
+                Write-Warning "Post-deployment verification had issues: $_"
+            }
+        }
+    } else {
+        try {
+            Write-Info "Running post-deployment verification..."
+            .\verify-deployment.ps1 -ProjectId $ProjectId -Detailed -TestFunctions
+            Write-Success "Post-deployment verification completed"
+        } catch {
+            Write-Warning "Post-deployment verification had issues: $_"
+        }
     }
 }
-
-:SkipPostVerification
 
 # Step 6: Final Summary and Next Steps
 Write-Header "DEPLOYMENT COMPLETE"

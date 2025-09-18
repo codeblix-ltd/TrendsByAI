@@ -145,17 +145,17 @@ Write-Progress "Step 4: Executing Database Setup"
 try {
     Write-Info "Pushing database changes to Supabase..."
     
-    # Method 1: Use Supabase CLI to push migrations
-    npx supabase db push --project-ref $ProjectId
+    # Method 1: Use Supabase CLI to push migrations (updated syntax)
+    npx supabase db push --linked
     if ($LASTEXITCODE -eq 0) {
         Write-Success "✓ Database migrations pushed successfully"
     } else {
         Write-Warning "⚠ Migration push had issues, trying alternative method..."
-        
+
         # Method 2: Reset and apply schema
         if ($ForceReset) {
             Write-Warning "Force reset enabled - this will reset the entire database!"
-            npx supabase db reset --project-ref $ProjectId --linked
+            npx supabase db reset --linked
         }
     }
     

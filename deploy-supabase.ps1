@@ -105,7 +105,7 @@ if (!$SkipFunctions) {
     foreach ($function in $functions) {
         try {
             Write-Info "Deploying function: $function"
-            npx supabase functions deploy $function --project-ref $ProjectId
+            npx supabase functions deploy $function
             if ($LASTEXITCODE -eq 0) {
                 Write-Success "✓ $function deployed successfully"
                 $SuccessCount++
@@ -131,7 +131,7 @@ if (!$SkipDatabase) {
     try {
         # Run migrations
         Write-Info "Running database migrations..."
-        npx supabase db push --project-ref $ProjectId
+        npx supabase db push --linked
         if ($LASTEXITCODE -eq 0) {
             Write-Success "Database migrations completed successfully"
         } else {
@@ -151,7 +151,7 @@ if (!$SkipDatabase) {
                 $tempFile = [System.IO.Path]::GetTempFileName() + ".sql"
                 Set-Content -Path $tempFile -Value $sqlContent
                 
-                npx supabase db reset --project-ref $ProjectId --linked
+                npx supabase db reset --linked
                 if ($LASTEXITCODE -eq 0) {
                     Write-Success "✓ Table created from $($tableFile.Name)"
                 } else {
@@ -189,7 +189,7 @@ if (!$SkipSecrets) {
 
         # Set primary YouTube API key
         Write-Info "Setting YOUTUBE_API_KEY environment variable..."
-        npx supabase secrets set YOUTUBE_API_KEY=$($youtubeKeys[0]) --project-ref $ProjectId
+        npx supabase secrets set YOUTUBE_API_KEY=$($youtubeKeys[0])
         if ($LASTEXITCODE -eq 0) {
             Write-Success "✓ YOUTUBE_API_KEY set successfully"
         } else {
@@ -198,8 +198,8 @@ if (!$SkipSecrets) {
         }
 
         # Set backup API keys
-        npx supabase secrets set YOUTUBE_API_KEY_BACKUP=$($youtubeKeys[1]) --project-ref $ProjectId
-        npx supabase secrets set YOUTUBE_API_KEY_BACKUP2=$($youtubeKeys[2]) --project-ref $ProjectId
+        npx supabase secrets set YOUTUBE_API_KEY_BACKUP=$($youtubeKeys[1])
+        npx supabase secrets set YOUTUBE_API_KEY_BACKUP2=$($youtubeKeys[2])
 
         Write-Success "Environment variables setup completed"
     } catch {
@@ -280,7 +280,7 @@ SELECT cron.schedule('$($job.name)', '$($job.cron)', 'CALL $($job.procedure)()')
             Set-Content -Path $tempSqlFile -Value $cronSql
 
             # Execute the SQL
-            npx supabase db reset --project-ref $ProjectId --linked
+            npx supabase db reset --linked
             if ($LASTEXITCODE -eq 0) {
                 Write-Success "✓ Cron job $($job.name) created successfully"
             } else {
