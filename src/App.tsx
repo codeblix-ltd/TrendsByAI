@@ -128,7 +128,7 @@ function AppContent() {
           <TrendingVideos videos={videos} />
 
           {/* API Monitor */}
-          <APIMonitor onRefresh={refetch} />
+          <APIMonitor onRefresh={refetch} onForceScan={refreshData} />
 
           {/* Video Table */}
           <VideoTable

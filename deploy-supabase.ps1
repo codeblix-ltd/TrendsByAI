@@ -183,7 +183,7 @@ if (!$SkipSecrets) {
         # YouTube API Keys found in the codebase
         $youtubeKeys = @(
             "AIzaSyB_KlEaUYdEPTKqrC6jl5DHy5DftcVq_1k",
-            "AIzaSyBLfyxwWCE7WVeNS07GzupDtI6eAz1XniM",
+            "AIzaSyA1NEXLmZzYIR_N7t-W8SHUq1DLe8WjJYE",
             "AIzaSyByB9I3Sw_HCM9M9fGx4joxdu3mVAEWf8Y"
         )
 

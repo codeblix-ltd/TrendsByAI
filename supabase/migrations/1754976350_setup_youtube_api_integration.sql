@@ -16,11 +16,11 @@ CREATE TABLE IF NOT EXISTS api_configuration (
 
 -- Insert YouTube API configuration record
 INSERT INTO api_configuration (service, status, notes) 
-VALUES ('youtube', 'configured', 'YouTube API key configured: AIzaSyBLfyxwWCE7WVeNS07GzupDtI6eAz1XniM')
+VALUES ('youtube', 'configured', 'YouTube API key configured: AIzaSyA1NEXLmZzYIR_N7t-W8SHUq1DLe8WjJYE')
 ON CONFLICT (service) DO UPDATE SET
   status = 'configured',
   last_configured = NOW(),
-  notes = 'YouTube API key configured: AIzaSyBLfyxwWCE7WVeNS07GzupDtI6eAz1XniM';
+  notes = 'YouTube API key configured: AIzaSyA1NEXLmZzYIR_N7t-W8SHUq1DLe8WjJYE';
 
 -- Create a function to check API configuration
 CREATE OR REPLACE FUNCTION get_api_configuration(service_name TEXT)

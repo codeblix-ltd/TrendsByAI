@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
         
         // Set the YouTube API key directly in the function environment
         // This is a workaround since we can't directly access Supabase environment variables setup
-        const YOUTUBE_API_KEY = 'AIzaSyBLfyxwWCE7WVeNS07GzupDtI6eAz1XniM';
+        const YOUTUBE_API_KEY = 'AIzaSyA1NEXLmZzYIR_N7t-W8SHUq1DLe8WjJYE';
         
         // Test the YouTube API key
         const testUrl = new URL('https://www.googleapis.com/youtube/v3/search');

@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
         // Fallback to hardcoded key if environment variable not available
         if (!youtubeApiKey) {
             console.log('Environment YouTube API key not found, using hardcoded fallback');
-            youtubeApiKey = 'AIzaSyBLfyxwWCE7WVeNS07GzupDtI6eAz1XniM';
+            youtubeApiKey = 'AIzaSyA1NEXLmZzYIR_N7t-W8SHUq1DLe8WjJYE';
         }
         
         const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -60,12 +60,19 @@ Deno.serve(async (req) => {
         console.log('Starting YouTube data fetch for keywords:', keywords);
 
         // Create scan session
-        const sessionId = `youtube_${scanType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        const sessionId = generateUUID();
         const sessionData = {
             id: sessionId,
-            scan_type: scanType,
-            status: 'running',
-            started_at: new Date().toISOString()
+            session_id: `youtube_${scanType}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+            status: 'running'
         };
 
         const sessionResponse = await fetch(`${supabaseUrl}/rest/v1/scan_sessions`, {
@@ -91,7 +98,7 @@ Deno.serve(async (req) => {
         let totalVideosFound = 0;
         let totalVideosProcessed = 0;
         let totalApiCalls = 0;
-        const errors = [];
+        const errors: string[] = [];
 
         // Check daily API usage
         const today = new Date().toISOString().split('T')[0];
@@ -158,9 +165,8 @@ Deno.serve(async (req) => {
                             body: JSON.stringify({
                                 status: 'completed_with_fallback',
                                 videos_found: fallbackData.length,
-                                videos_processed: fallbackData.length,
-                                api_calls_used: 0,
-                                errors_count: 1,
+                                api_calls_made: 0,
+                                errors: ['YouTube API key not available - using sample data'],
                                 completed_at: new Date().toISOString()
                             })
                         });
@@ -352,9 +358,8 @@ Deno.serve(async (req) => {
             body: JSON.stringify({
                 status: 'completed',
                 videos_found: totalVideosFound,
-                videos_processed: totalVideosProcessed,
-                api_calls_used: totalApiCalls,
-                errors_count: errors.length,
+                api_calls_made: totalApiCalls,
+                errors: errors.slice(0, 10), // Limit to first 10 errors
                 completed_at: new Date().toISOString()
             })
         });

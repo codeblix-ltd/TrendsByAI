@@ -15,11 +15,13 @@ import { supabase, ApiUsage } from '../lib/supabase'
 
 interface APIMonitorProps {
   onRefresh?: () => void
+  onForceScan?: () => void
 }
 
-const APIMonitor: React.FC<APIMonitorProps> = ({ onRefresh }) => {
+const APIMonitor: React.FC<APIMonitorProps> = ({ onRefresh, onForceScan }) => {
   const [apiUsage, setApiUsage] = useState<ApiUsage | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isScanning, setIsScanning] = useState(false)
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
 
   const fetchAPIUsage = async () => {
@@ -73,6 +75,21 @@ const APIMonitor: React.FC<APIMonitorProps> = ({ onRefresh }) => {
   const handleRefresh = () => {
     fetchAPIUsage()
     onRefresh?.()
+  }
+
+  const handleForceScan = async () => {
+    if (isScanning) return
+
+    try {
+      setIsScanning(true)
+      await onForceScan?.()
+      // Refresh API usage after scan
+      await fetchAPIUsage()
+    } catch (error) {
+      console.error('Force scan failed:', error)
+    } finally {
+      setIsScanning(false)
+    }
   }
 
   return (
@@ -246,8 +263,12 @@ const APIMonitor: React.FC<APIMonitorProps> = ({ onRefresh }) => {
             <button className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1 rounded transition-colors">
               View Logs
             </button>
-            <button className="text-xs bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1 rounded transition-colors">
-              Force Scan
+            <button
+              onClick={handleForceScan}
+              disabled={isScanning}
+              className="text-xs bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-3 py-1 rounded transition-colors"
+            >
+              {isScanning ? 'Scanning...' : 'Force Scan'}
             </button>
           </div>
         </div>
