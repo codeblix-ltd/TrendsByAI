@@ -60,8 +60,9 @@ Deno.serve(async (req) => {
         console.log('Starting YouTube data fetch for keywords:', keywords);
 
         // Create scan session
+        const sessionId = `youtube_${scanType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const sessionData = {
-            platform: 'youtube',
+            id: sessionId,
             scan_type: scanType,
             status: 'running',
             started_at: new Date().toISOString()
@@ -79,11 +80,13 @@ Deno.serve(async (req) => {
         });
 
         if (!sessionResponse.ok) {
-            throw new Error('Failed to create scan session');
+            const errorText = await sessionResponse.text();
+            console.error('Failed to create scan session:', errorText);
+            throw new Error(`Failed to create scan session: ${errorText}`);
         }
 
         const session = await sessionResponse.json();
-        const sessionId = session[0].id;
+        console.log('Scan session created successfully:', sessionId);
 
         let totalVideosFound = 0;
         let totalVideosProcessed = 0;
