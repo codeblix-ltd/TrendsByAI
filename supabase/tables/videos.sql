@@ -1,0 +1,23 @@
+CREATE TABLE videos (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    video_id TEXT UNIQUE NOT NULL,
+    title TEXT NOT NULL,
+    channel_title TEXT,
+    thumbnail_url TEXT,
+    video_url TEXT,
+    published_at TIMESTAMPTZ,
+    category TEXT,
+    region_code TEXT,
+    country_name TEXT,
+    view_count BIGINT DEFAULT 0,
+    like_count BIGINT DEFAULT 0,
+    comment_count BIGINT DEFAULT 0,
+    viral_score NUMERIC DEFAULT 0,
+    view_velocity NUMERIC DEFAULT 0,
+    is_viral BOOLEAN DEFAULT FALSE,
+    trending_rank INTEGER,
+    age_hours INTEGER,
+    search_query TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);

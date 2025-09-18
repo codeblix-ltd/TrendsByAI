@@ -1,0 +1,20 @@
+CREATE TABLE video_scans (
+    id SERIAL PRIMARY KEY,
+    video_id VARCHAR(255) UNIQUE,
+    title TEXT NOT NULL,
+    description TEXT,
+    thumbnail_url TEXT,
+    channel_title VARCHAR(255),
+    published_at TIMESTAMP,
+    category VARCHAR(100) DEFAULT 'AI Horror',
+    search_query TEXT,
+    youtube_url TEXT,
+    view_count INTEGER DEFAULT 0,
+    like_count INTEGER DEFAULT 0,
+    comment_count INTEGER DEFAULT 0,
+    viral_score DECIMAL(10,2) DEFAULT 0.0,
+    view_velocity DECIMAL(10,2) DEFAULT 0.0,
+    region_code VARCHAR(10),
+    scanned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
