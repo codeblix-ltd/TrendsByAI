@@ -102,7 +102,7 @@ function AppContent() {
   return (
     <div
       className="min-h-screen bg-[#0D0F18] bg-cover bg-center p-4 sm:p-6 lg:p-8"
-      style={{ backgroundImage: 'url(https://images.pexels.com/photos/11074957/pexels-photo-11074957.jpeg)' }}
+      style={{ backgroundImage: 'url(https://i.pinimg.com/originals/5d/56/99/5d56993d543ac6735b31ee3e4ac29d95.gif)' }}
     >
       <div className="max-w-[1920px] mx-auto">
         <NewHeader

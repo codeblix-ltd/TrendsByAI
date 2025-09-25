@@ -26,7 +26,9 @@ const AIAssistantCard: React.FC<AIAssistantCardProps> = ({ isSearching, searchPr
         <h2 className="text-lg font-semibold text-white">AI-Powered Discovery</h2>
       </div>
       <div className="flex-grow flex flex-col items-center text-center">
-        <img src="https://images.unsplash.com/photo-1679403463989-d12450d0325b?q=80&w=1887&auto=format&fit=crop" alt="AI Assistant" className="w-32 h-32 object-cover rounded-full mb-4"/>
+        <div className="w-32 h-32 rounded-full mb-4 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+          <ZapIcon className="w-16 h-16 text-white" />
+        </div>
         <p className="text-sm text-gray-400 px-2">
           Trigger a broad scan or search for specific content.
         </p>
