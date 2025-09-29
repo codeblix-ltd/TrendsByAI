@@ -9,34 +9,40 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export interface Video {
   id: string
   video_id: string
-  platform: string
   title: string
   description?: string
-  channel_name: string
-  channel_id?: string
-  url: string
+  channel_title: string
+  channel_name?: string
+  thumbnail_url?: string
+  video_url: string
+  url?: string
+  published_at: string
+  publish_time?: string
+  category?: string
+  region_code?: string
+  country_name?: string
   view_count: number
   like_count: number
   comment_count: number
   engagement_rate: number
-  thumbnail_url?: string
-  publish_time: string
+  viral_score: number
+  view_velocity: number
+  velocity_score?: number
+  views_per_minute?: number
+  age_minutes?: number
   duration_seconds?: number
-  language?: string
-  category?: string
-  niche?: string
-  age_minutes: number
-  views_per_minute: number
-  velocity_score: number
-  novelty_score: number
-  title_quality_score: number
-  seo_score: number
   overall_score: number
   is_trending: boolean
+  is_viral: boolean
+  trending_rank?: number
+  age_hours?: number
+  search_query?: string
+  platform?: string
   hashtags?: string[]
   tags?: string[]
   created_at: string
-  last_updated: string
+  updated_at: string
+  last_updated?: string
 }
 
 export interface ApiUsage {
