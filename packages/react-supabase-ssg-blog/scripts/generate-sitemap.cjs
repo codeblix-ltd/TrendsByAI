@@ -20,8 +20,8 @@ async function generateSitemap() {
 
     // Initialize Supabase client
     // Use the actual Supabase URL from the client config
-    const supabaseUrl = 'https://dmcrnqeekjjjjejgfhyj.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtY3JucWVla2pqamplamdmaHlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4OTUzNDgsImV4cCI6MjA3NDQ3MTM0OH0.pdnLUbETifoabD_hHzzO2mdZs9JzdRoq-poENq8nlrI';
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://nckesiywrprkozozuucq.supabase.co';
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ja2VzaXl3cnBya296b3p1dWNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgxOTgxMDcsImV4cCI6MjA3Mzc3NDEwN30.mbEKgNeD3F1YqLixgenuBjlegHj-UcBIS5h-JRAU860';
 
     if (!supabaseUrl || !supabaseKey) {
       throw new Error('Missing Supabase credentials. Check your .env file.');

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { AuthProvider } from './contexts/AuthContext'
@@ -8,6 +9,9 @@ import SEOPackModal from './components/SEOPackModal'
 import { useVideos, useStats, useSEOGenerator } from './hooks/useData'
 import { Video } from './lib/supabase'
 import { AlertCircle, Loader2 } from 'lucide-react'
+import Blog from './pages/Blog'
+import BlogPost from './pages/BlogPost'
+import 'react-supabase-ssg-blog/src/styles/index.css'
 
 // Create a client
 const queryClient = new QueryClient()
@@ -159,7 +163,13 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AppContent />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<AppContent />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
   )
