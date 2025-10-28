@@ -1,0 +1,100 @@
+/**
+ * Blog Style Overrides
+ * Override the default blog package styles to ensure proper text visibility
+ */
+
+/* Blog Index - Force dark text on light background */
+.blog-index h1,
+.blog-index h2,
+.blog-index h3,
+.blog-index h4,
+.blog-index h5,
+.blog-index h6 {
+  color: #1a202c !important;
+}
+
+.blog-index p,
+.blog-index span,
+.blog-index div {
+  color: #2d3748 !important;
+}
+
+.blog-index a {
+  color: #3182ce !important;
+}
+
+.blog-index a:hover {
+  color: #2c5282 !important;
+}
+
+/* Article cards */
+.blog-index article {
+  background-color: #ffffff !important;
+  color: #2d3748 !important;
+}
+
+.blog-index article h2,
+.blog-index article h3 {
+  color: #1a202c !important;
+}
+
+.blog-index article p {
+  color: #4a5568 !important;
+}
+
+/* Meta information (author, date, read time) */
+.blog-index article .text-gray-500,
+.blog-index article .text-gray-600,
+.blog-index article .text-gray-400 {
+  color: #718096 !important;
+}
+
+/* Tags */
+.blog-index article span[class*="bg-"] {
+  background-color: #e2e8f0 !important;
+  color: #2d3748 !important;
+}
+
+/* Pagination buttons */
+.blog-index nav button {
+  color: #2d3748 !important;
+  background-color: #ffffff !important;
+  border-color: #cbd5e0 !important;
+}
+
+.blog-index nav button:hover:not(:disabled) {
+  background-color: #edf2f7 !important;
+  color: #1a202c !important;
+}
+
+.blog-index nav button:disabled {
+  color: #a0aec0 !important;
+  background-color: #f7fafc !important;
+}
+
+/* Active page button */
+.blog-index nav button[class*="bg-blue"],
+.blog-index nav button[class*="bg-cyan"] {
+  background-color: #3182ce !important;
+  color: #ffffff !important;
+}
+
+/* Loading and error states */
+.blog-index-loading,
+.blog-index-error,
+.blog-index-empty {
+  color: #2d3748 !important;
+}
+
+.blog-index-loading h2,
+.blog-index-error h2,
+.blog-index-empty h2 {
+  color: #1a202c !important;
+}
+
+.blog-index-loading p,
+.blog-index-error p,
+.blog-index-empty p {
+  color: #4a5568 !important;
+}
+
