@@ -1,0 +1,61 @@
+{
+  "name": "react-supabase-ssg-blog",
+  "version": "1.0.0",
+  "description": "A reusable React package for adding SEO-friendly blog functionality with Supabase backend and Static Site Generation support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "react-supabase-ssg-blog": "./scripts/cli.cjs"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "templates",
+    "src/styles",
+    "README.md",
+    "DEPLOYMENT_LOCAL.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "postinstall": "node scripts/postinstall.cjs"
+  },
+  "keywords": [
+    "react",
+    "blog",
+    "ssg",
+    "static-site-generation",
+    "supabase",
+    "seo",
+    "typescript",
+    "cms",
+    "headless-cms"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/react-supabase-ssg-blog"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/react-supabase-ssg-blog/issues"
+  },
+  "homepage": "https://github.com/yourusername/react-supabase-ssg-blog#readme",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
+

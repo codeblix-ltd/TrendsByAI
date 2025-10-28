@@ -1,0 +1,71 @@
+/**
+ * Blog Index (List) Styles
+ * Styles for the blog listing page with pagination
+ */
+
+/* Blog Index Container */
+.blog-index {
+  min-height: 100vh;
+  background-color: #f7fafc;
+}
+
+/* Loading State */
+.blog-index-loading {
+  min-height: 100vh;
+  background-color: #f7fafc;
+}
+
+/* Error State */
+.blog-index-error {
+  min-height: 100vh;
+  background-color: #f7fafc;
+}
+
+/* Empty State */
+.blog-index-empty {
+  min-height: 100vh;
+  background-color: #f7fafc;
+}
+
+/* Article Cards */
+.blog-index article {
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.blog-index article:hover {
+  transform: translateY(-2px);
+}
+
+/* Pagination */
+.blog-index nav {
+  margin-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.blog-index nav button {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.blog-index nav button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.blog-index nav button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-index nav {
+    flex-wrap: wrap;
+  }
+
+  .blog-index nav button {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+

@@ -1,0 +1,8 @@
+/**
+ * React Supabase SSG Blog - Default Styles
+ * Import this file to get beautiful default styling for your blog
+ */
+
+@import './blog-article.css';
+@import './blog-index.css';
+
