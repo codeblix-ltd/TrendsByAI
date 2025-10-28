@@ -1,21 +1,33 @@
 import { BlogIndex } from 'react-supabase-ssg-blog';
-import { supabase } from '@/lib/supabase'; // Update this path to your Supabase client
+import { supabase } from '@/lib/supabase';
+import BlogHeader from '@/components/ui/BlogHeader';
 
 /**
  * Blog page - displays list of blog articles
  */
 const Blog = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <BlogIndex 
-        supabaseClient={supabase}
-        basePath="/blog"
-        postsPerPage={10}
-        showExcerpt={true}
-        showAuthor={true}
-        showDate={true}
-        showTags={true}
-      />
+    <div
+      className="min-h-screen bg-[#0D0F18] bg-cover bg-center p-4 sm:p-6 lg:p-8"
+      style={{ backgroundImage: 'url(https://i.pinimg.com/originals/5d/56/99/5d56993d543ac6735b31ee3e4ac29d95.gif)' }}
+    >
+      <div className="max-w-[1920px] mx-auto">
+        <BlogHeader />
+
+        <main className="mt-8">
+          <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 sm:p-8">
+            <BlogIndex
+              supabaseClient={supabase}
+              basePath="/blog"
+              postsPerPage={10}
+              showExcerpt={true}
+              showAuthor={true}
+              showDate={true}
+              showTags={true}
+            />
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

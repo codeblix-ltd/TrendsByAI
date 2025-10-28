@@ -4,26 +4,14 @@ import { motion } from 'framer-motion'
 import { useAuth } from '../../contexts/AuthContext'
 import AuthModal from '../AuthModal'
 import UserPreferencesModal from '../UserPreferencesModal'
-import { SearchIcon, BellIcon, SettingsIcon } from './icons'
-import { LogIn, LogOut, User, RefreshCw, Download, BookOpen } from 'lucide-react'
+import { BellIcon, SettingsIcon } from './icons'
+import { LogIn, LogOut, User, Home, BookOpen } from 'lucide-react'
 
-interface NewHeaderProps {
-  onRefresh: () => void
-  onExport: () => void
-  searchQuery: string
-  onSearchChange: (query: string) => void
-  isLoading: boolean
-  onSettingsClick?: () => void
-}
-
-const NewHeader: React.FC<NewHeaderProps> = ({ 
-  onRefresh, 
-  onExport, 
-  searchQuery, 
-  onSearchChange, 
-  isLoading,
-  onSettingsClick
-}) => {
+/**
+ * BlogHeader Component
+ * Header for blog pages - consistent across all blog pages
+ */
+const BlogHeader: React.FC = () => {
   const { user, signOut } = useAuth()
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [preferencesModalOpen, setPreferencesModalOpen] = useState(false)
@@ -39,11 +27,7 @@ const NewHeader: React.FC<NewHeaderProps> = ({
   }
 
   const handleSettingsClick = () => {
-    if (onSettingsClick) {
-      onSettingsClick()
-    } else {
-      setPreferencesModalOpen(true)
-    }
+    setPreferencesModalOpen(true)
   }
 
   return (
@@ -58,61 +42,27 @@ const NewHeader: React.FC<NewHeaderProps> = ({
               PRO
             </span>
           </div>
-
+          
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-4">
-            <Link
-              to="/blog"
+          <nav className="flex items-center gap-4">
+            <Link 
+              to="/" 
               className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm"
             >
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">Home</span>
+            </Link>
+            <Link 
+              to="/blog" 
+              className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors text-sm"
+            >
               <BookOpen className="w-4 h-4" />
-              <span>Blog</span>
+              <span className="hidden sm:inline">Blog</span>
             </Link>
           </nav>
         </div>
-
+        
         <div className="flex items-center gap-3">
-          {/* Search functionality - hidden on mobile, can be toggled */}
-          <div className="hidden md:block">
-            <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search videos..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="w-64 bg-white/5 border border-white/10 rounded-2xl px-10 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 text-sm"
-              />
-            </div>
-          </div>
-
-          {/* Mobile search button */}
-          <button className="md:hidden p-2.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-            <SearchIcon className="text-gray-300" />
-          </button>
-
-          {/* Action buttons */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onRefresh}
-            disabled={isLoading}
-            className="hidden sm:flex items-center space-x-2 bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 text-white px-4 py-2 rounded-2xl transition-colors duration-200 text-sm"
-          >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
-          </motion.button>
-          
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onExport}
-            className="hidden sm:flex items-center space-x-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-2xl transition-colors duration-200 text-sm"
-          >
-            <Download className="w-4 h-4" />
-            <span>Export</span>
-          </motion.button>
-
           <button className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
             <BellIcon className="text-gray-300" />
           </button>
@@ -193,4 +143,5 @@ const NewHeader: React.FC<NewHeaderProps> = ({
   )
 }
 
-export default NewHeader
+export default BlogHeader
+
