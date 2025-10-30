@@ -52,22 +52,17 @@ const isCI = process.env.CI === 'true' || !process.stdin.isTTY;
 const isLocalInstall = !projectRoot.includes('node_modules') &&
                        projectRoot === path.resolve(__dirname, '../../..');
 
-// Allow forcing setup via environment variable
-const forceSetup = process.env.FORCE_SETUP === 'true';
-
-if (isCI && !forceSetup) {
+if (isCI) {
   log.info('Running in CI/non-interactive mode - skipping auto-setup');
   log.info('Run "npx react-supabase-ssg-blog setup" manually to configure');
   process.exit(0);
 }
 
-if (isLocalInstall && !forceSetup) {
+if (isLocalInstall) {
   log.warning('Detected local package installation (monorepo/workspace)');
   log.info('Postinstall skipped for local packages');
   log.info('');
   log.info('To setup the package, run:');
-  log.info('  FORCE_SETUP=true node packages/react-supabase-ssg-blog/scripts/postinstall.cjs');
-  log.info('  or');
   log.info('  node packages/react-supabase-ssg-blog/scripts/cli.cjs setup');
   log.info('');
   process.exit(0);

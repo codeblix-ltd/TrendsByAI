@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import type { BlogArticle, BlogIndexProps, PaginationInfo } from '../types';
 import { BlogService } from '../services/blogService';
 import { formatDate, generateExcerpt } from '../utils/ssgHelpers';
@@ -19,7 +19,6 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
   className = '',
   onArticleClick
 }) => {
-  const navigate = useNavigate();
   const [articles, setArticles] = useState<BlogArticle[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo>({
     currentPage: 1,
@@ -68,12 +67,12 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
     metaDescription.setAttribute('content', 'Read our latest blog articles on web development, React, and more.');
   }, []);
 
-  const handleArticleClick = (article: BlogArticle) => {
+  const handleArticleClick = (e: React.MouseEvent, article: BlogArticle) => {
     if (onArticleClick) {
+      e.preventDefault();
       onArticleClick(article);
-    } else {
-      navigate(`${basePath}/${article.slug}`);
     }
+    // If no custom handler, let the Link component handle navigation
   };
 
   const handlePageChange = (newPage: number) => {
@@ -155,10 +154,13 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
           {articles.map((article) => (
             <article
               key={article.id}
-              className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200 cursor-pointer"
-              onClick={() => handleArticleClick(article)}
+              className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200"
             >
-              <div className="md:flex">
+              <Link
+                to={`${basePath}/${article.slug}`}
+                onClick={(e) => handleArticleClick(e, article)}
+                className="block md:flex no-underline text-inherit"
+              >
                 {/* Featured image */}
                 {article.featured_image && (
                   <div className="md:w-1/3">
@@ -170,43 +172,43 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
                     />
                   </div>
                 )}
-                
+
                 {/* Content */}
                 <div className={`p-6 ${article.featured_image ? 'md:w-2/3' : 'w-full'}`}>
                   <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600">
                     {article.title}
                   </h2>
-                  
+
                   {/* Meta information */}
                   <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-4">
                     {showAuthor && article.author && (
                       <span className="font-medium">{article.author}</span>
                     )}
-                    
+
                     {showDate && (
                       <time dateTime={article.published_at}>
                         {formatDate(article.published_at, 'short')}
                       </time>
                     )}
-                    
+
                     {article.read_time && (
                       <span>{article.read_time} min read</span>
                     )}
-                    
+
                     {article.category && (
                       <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
                         {article.category}
                       </span>
                     )}
                   </div>
-                  
+
                   {/* Excerpt */}
                   {showExcerpt && (
                     <p className="text-gray-700 mb-4 line-clamp-3">
                       {article.excerpt || generateExcerpt(article.content)}
                     </p>
                   )}
-                  
+
                   {/* Tags */}
                   {showTags && article.tags && article.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-4">
@@ -225,13 +227,13 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
                       )}
                     </div>
                   )}
-                  
+
                   {/* Read more link */}
                   <div className="text-blue-600 hover:text-blue-800 font-medium">
                     Read more →
                   </div>
                 </div>
-              </div>
+              </Link>
             </article>
           ))}
         </div>

@@ -100,10 +100,37 @@ TO authenticated
 USING (auth.uid() = author_id);
 
 -- Function to automatically update the updated_at timestamp
+-- Only updates when content-related fields change, not when views or metadata change
 CREATE OR REPLACE FUNCTION public.update_blog_articles_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.updated_at = NOW();
+    -- Only update updated_at if content-related fields have changed
+    -- Do NOT update if only views or other metadata fields changed
+    IF (
+        NEW.title IS DISTINCT FROM OLD.title OR
+        NEW.content IS DISTINCT FROM OLD.content OR
+        NEW.excerpt IS DISTINCT FROM OLD.excerpt OR
+        NEW.featured_image IS DISTINCT FROM OLD.featured_image OR
+        NEW.featured_image_alt IS DISTINCT FROM OLD.featured_image_alt OR
+        NEW.status IS DISTINCT FROM OLD.status OR
+        NEW.tags IS DISTINCT FROM OLD.tags OR
+        NEW.category IS DISTINCT FROM OLD.category OR
+        NEW.meta_title IS DISTINCT FROM OLD.meta_title OR
+        NEW.meta_description IS DISTINCT FROM OLD.meta_description OR
+        NEW.meta_keywords IS DISTINCT FROM OLD.meta_keywords OR
+        NEW.intro IS DISTINCT FROM OLD.intro OR
+        NEW.direct_answer IS DISTINCT FROM OLD.direct_answer OR
+        NEW.sections IS DISTINCT FROM OLD.sections OR
+        NEW.image_prompts IS DISTINCT FROM OLD.image_prompts OR
+        NEW.aeo_schema IS DISTINCT FROM OLD.aeo_schema OR
+        NEW.internal_links IS DISTINCT FROM OLD.internal_links OR
+        NEW.author IS DISTINCT FROM OLD.author OR
+        NEW.author_id IS DISTINCT FROM OLD.author_id OR
+        NEW.read_time IS DISTINCT FROM OLD.read_time
+    ) THEN
+        NEW.updated_at = NOW();
+    END IF;
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -116,6 +143,11 @@ CREATE TRIGGER update_blog_articles_updated_at_trigger
 BEFORE UPDATE ON public.blog_articles
 FOR EACH ROW
 EXECUTE FUNCTION public.update_blog_articles_updated_at();
+
+-- Add a comment explaining the trigger behavior
+COMMENT ON FUNCTION public.update_blog_articles_updated_at() IS
+'Updates the updated_at timestamp only when content-related fields change.
+Does not update when only views or other metadata fields are modified.';
 
 -- Function to increment article views
 CREATE OR REPLACE FUNCTION public.increment_article_views(article_slug TEXT)

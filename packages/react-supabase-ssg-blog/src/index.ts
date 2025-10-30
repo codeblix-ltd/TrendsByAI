@@ -5,8 +5,8 @@
  * @packageDocumentation
  */
 
-// Export styles (users can import this in their main app)
-import './styles/index.css';
+// Note: Styles should be imported in your main app file:
+// import 'react-supabase-ssg-blog/src/styles/index.css';
 
 // Export components
 export { BlogArticle } from './components/BlogArticle';

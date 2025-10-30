@@ -43,10 +43,7 @@ ${colors.bright}Documentation:${colors.reset}
 function runSetup() {
   const setupScript = path.join(__dirname, 'postinstall.cjs');
   try {
-    execSync(`node "${setupScript}"`, {
-      stdio: 'inherit',
-      env: { ...process.env, FORCE_SETUP: 'true' }
-    });
+    execSync(`node "${setupScript}"`, { stdio: 'inherit' });
   } catch (error) {
     console.error('Setup failed:', error.message);
     process.exit(1);
