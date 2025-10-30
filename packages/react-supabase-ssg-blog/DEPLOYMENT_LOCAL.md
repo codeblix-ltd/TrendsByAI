@@ -164,7 +164,7 @@ export default BlogPost;
 ### 7. Create Environment Variables
 
 ```env
-VITE_SUPABASE_URL=https://jecfmpvnvpnblzkxqjys.supabase.co
+VITE_SUPABASE_URL=https://nckesiywrprkozozuucq.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_SITE_URL=https://domain.com
 ```
